@@ -1,0 +1,62 @@
+name: Gerar IPA para iOS (AltStore)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ipa:
+    name: Compilar IPA Sem Assinatura (macOS Xcode)
+    runs-on: macos-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências e gerar build de produção
+        run: |
+          npm ci
+          npm run build
+          npx cap copy ios
+
+      - name: Instalar CocoaPods no projeto iOS
+        working-directory: ios/App
+        run: |
+          pod install
+
+      - name: Compilar App iOS no Xcode (Unsigned para AltStore / SideStore)
+        working-directory: ios/App
+        run: |
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            clean build
+
+      - name: Empacotar arquivo Dragonwilds-Companion-PTBR.ipa
+        working-directory: ios/App
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/App.app Payload/
+          zip -r9 Dragonwilds-Companion-PTBR.ipa Payload
+
+      - name: Disponibilizar .IPA para Download (AltStore)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Dragonwilds-Companion-PTBR-iOS-IPA
+          path: ios/App/Dragonwilds-Companion-PTBR.ipa
+          if-no-files-found: error
+          retention-days: 90

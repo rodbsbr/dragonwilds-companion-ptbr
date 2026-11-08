@@ -1,0 +1,10 @@
+{
+  "name": "RuneScape: Dragonwilds Companion PT-BR",
+  "short_name": "Dragonwilds PT",
+  "description": "Guia de Segunda Tela para PS5 100% em Português: Mapa Interativo de Ashenfall, Calculadora de Expedição, Progressão e Bestiário.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080b11",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary"
+}

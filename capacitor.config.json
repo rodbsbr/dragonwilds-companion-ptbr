@@ -1,0 +1,16 @@
+{
+  "appId": "com.dragonwilds.companion.ptbr",
+  "appName": "Dragonwilds PT-BR",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#060911",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#060911",
+    "preferredContentMode": "mobile",
+    "allowsLinkPreview": false
+  },
+  "server": {
+    "iosScheme": "capacitor"
+  }
+}
